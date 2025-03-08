@@ -129,20 +129,29 @@ const PregnancyChanceResult: React.FC<Props> = ({ result }) => {
       <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={handleGetMoreInsights}
           disabled={isLoading}
           startIcon={isLoading ? <CircularProgress size={20} /> : null}
+          sx={{
+            py: 1.5,
+            fontSize: '1.1rem',
+            fontWeight: 'bold',
+            boxShadow: 3,
+            '&:hover': {
+              boxShadow: 6
+            }
+          }}
         >
-          {isLoading ? 'Getting Insights...' : 'Get More AI Insights'}
+          {isLoading ? 'Analyzing Data...' : '🔍 Get Advanced AI Analysis'}
         </Button>
 
         {llmInsights && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              AI Generated Insights:
+            <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+              Advanced AI Analysis:
             </Typography>
-            <Typography variant="body2">
+            <Typography variant="body1">
               {llmInsights}
             </Typography>
           </Alert>

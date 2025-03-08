@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Box, Paper, Typography, Alert } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import IUIDataForm from './IUIDataForm';
+import PregnancyChanceResult from './PregnancyChanceResult';
 import { IUIAttempt } from '../types';
+import { calculatePregnancyChances } from '../utils/pregnancyCalculator';
 
 const IUICalculator: React.FC = () => {
-  const [result, setResult] = useState<{ probability: number } | null>(null);
+  const [calculationResult, setCalculationResult] = useState<ReturnType<typeof calculatePregnancyChances> | null>(null);
 
   const handleSubmit = (attempt: IUIAttempt) => {
-    if (attempt.successProbability !== undefined) {
-      setResult({ probability: attempt.successProbability });
-    }
+    const result = calculatePregnancyChances(attempt);
+    setCalculationResult(result);
   };
 
   return (
@@ -25,22 +26,8 @@ const IUICalculator: React.FC = () => {
 
       <IUIDataForm onSubmit={handleSubmit} />
 
-      {result && (
-        <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            Calculated Success Probability
-          </Typography>
-          <Alert severity="info" sx={{ mb: 2 }}>
-            Based on the provided information, your estimated success probability is:
-          </Alert>
-          <Typography variant="h3" color="primary" align="center" sx={{ my: 3 }}>
-            {(result.probability * 100).toFixed(1)}%
-          </Typography>
-          <Alert severity="warning">
-            This is a statistical estimate based on available research. Individual results may vary.
-            Always consult with your healthcare provider for personalized medical advice.
-          </Alert>
-        </Paper>
+      {calculationResult && (
+        <PregnancyChanceResult result={calculationResult} />
       )}
     </Box>
   );
