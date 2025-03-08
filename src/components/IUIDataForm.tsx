@@ -19,6 +19,7 @@ import {
 import { Add as AddIcon, Remove as RemoveIcon } from '@mui/icons-material';
 import { IUIAttempt } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 // Common medications used in IUI
 const COMMON_MEDICATIONS = [
@@ -136,7 +137,7 @@ const IUIDataForm: React.FC<IUIDataFormProps> = ({ onSubmit, initialData = {} })
   };
 
   // Handle medication selection
-  const handleMedicationChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleMedicationChange = (event: SelectChangeEvent<string[]>) => {
     formik.setFieldValue('medicationsUsed', event.target.value);
   };
 
