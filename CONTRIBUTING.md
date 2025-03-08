@@ -1,146 +1,86 @@
-# Contributing to IUI Success Tracker
+# Contributing to IUI Success Calculator
 
-Thank you for considering contributing to IUI Success Tracker! This document outlines the guidelines for contributing to the project.
+We love your input! We want to make contributing to IUI Success Calculator as easy and transparent as possible, whether it's:
 
-## Core Principles
+- Reporting a bug
+- Discussing the current state of the code
+- Submitting a fix
+- Proposing new features
+- Improving medical accuracy
+- Becoming a maintainer
 
-Before contributing, please understand our core principles:
+## We Develop with GitHub
 
-1. **Zero Data Storage**: The application must never store user data, either locally or remotely
-2. **Complete Privacy**: No analytics, no tracking, no user accounts
-3. **Client-Side Only**: All operations must happen in the browser with no server communication
-4. **Instant Results**: Calculations and recommendations should be immediate
+We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
 
-## Code of Conduct
+## Medical Contributions
 
-By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md). Please read it before contributing.
+If you're a medical professional or researcher:
 
-## How Can I Contribute?
+1. Help us validate and improve our success rate calculations
+2. Suggest additional factors that influence IUI success
+3. Provide references to recent research and studies
+4. Review and improve medical recommendations
+5. Help maintain medical accuracy in our documentation
 
-### Reporting Bugs
+## Developer Contributions
 
-This section guides you through submitting a bug report. Following these guidelines helps maintainers understand your report, reproduce the issue, and find related reports.
+We actively welcome your pull requests:
 
-Before creating bug reports, please check [this list](https://github.com/yourusername/iui-tracker/issues) as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
+1. Fork the repo and create your branch from `main`
+2. If you've added code that should be tested, add tests
+3. If you've changed APIs, update the documentation
+4. Ensure the test suite passes
+5. Make sure your code follows our coding standards
+6. Issue that pull request!
 
-* **Use a clear and descriptive title** for the issue to identify the problem.
-* **Describe the exact steps which reproduce the problem** in as many details as possible.
-* **Provide specific examples to demonstrate the steps**.
-* **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
-* **Explain which behavior you expected to see instead and why.**
-* **Include screenshots or animated GIFs** which show you following the described steps and clearly demonstrate the problem.
-* **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened.
+### Development Guidelines
 
-### Suggesting Enhancements
+- Follow the TypeScript + React best practices
+- Maintain type safety throughout the codebase
+- Keep components focused and reusable
+- Write meaningful commit messages
+- Document your changes
 
-This section guides you through submitting an enhancement suggestion, including completely new features and minor improvements to existing functionality:
+## User Experience Contributions
 
-* **Use a clear and descriptive title** for the issue to identify the suggestion.
-* **Provide a step-by-step description of the suggested enhancement** in as many details as possible.
-* **Provide specific examples to demonstrate the steps**.
-* **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
-* **Explain why this enhancement would be useful** to most users.
+If you've gone through IUI treatment:
 
-### Pull Requests
+1. Share your insights about important factors to track
+2. Suggest improvements to the user interface
+3. Help make the tool more user-friendly
+4. Provide feedback on the accuracy of predictions
+5. Suggest additional features that would be helpful
 
-* Fill in the required template
-* Follow the TypeScript and React style guides
-* Document new code
-* End all files with a newline
-* Ensure no data storage or server communication is introduced
-* Maintain the client-side only architecture
+## Any contributions you make will be under the MIT Software License
 
-## Development Process
+In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
 
-### Setting Up Your Development Environment
+## Report bugs using GitHub's [issue tracker]
 
-1. Fork the repository
-2. Clone your fork:
-   ```bash
-   git clone https://github.com/your-username/iui-tracker.git
-   cd iui-tracker
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Create a new branch:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/yourusername/iui-tracker/issues/new).
 
-### Development Workflow
+## Write bug reports with detail, background, and sample code
 
-1. Make your changes
-2. Test your changes:
-   ```bash
-   npm test
-   ```
-3. Make sure your code follows the style guidelines:
-   ```bash
-   npm run lint
-   ```
-4. Commit your changes using a descriptive commit message that follows [conventional commits](https://www.conventionalcommits.org/):
-   ```bash
-   git commit -m "feat: add new feature"
-   ```
-5. Push your branch to GitHub:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-6. Create a pull request
+**Great Bug Reports** tend to have:
 
-## Styleguides
+- A quick summary and/or background
+- Steps to reproduce
+  - Be specific!
+  - Give sample code if you can
+- What you expected would happen
+- What actually happens
+- Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
 
-### Git Commit Messages
+## Use a Consistent Coding Style
 
-* Use the present tense ("Add feature" not "Added feature")
-* Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
-* Limit the first line to 72 characters or less
-* Reference issues and pull requests liberally after the first line
-* Consider starting the commit message with an applicable emoji:
-    * 🎨 `:art:` when improving the format/structure of the code
-    * 🐎 `:racehorse:` when improving performance
-    * 🚱 `:non-potable_water:` when plugging memory leaks
-    * 📝 `:memo:` when writing docs
-    * 🐛 `:bug:` when fixing a bug
-    * 🔥 `:fire:` when removing code or files
-    * 💚 `:green_heart:` when fixing the CI build
-    * ✅ `:white_check_mark:` when adding tests
-    * 🔒 `:lock:` when dealing with security
-    * ⬆️ `:arrow_up:` when upgrading dependencies
-    * ⬇️ `:arrow_down:` when downgrading dependencies
+* 2 spaces for indentation rather than tabs
+* You can try running `npm run lint` for style unification
 
-### TypeScript Styleguide
+## License
 
-* Follow the [TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html)
-* Use types instead of interfaces for consistency
-* Avoid using `any` - use proper typing
-* Use type inference when possible
-* Export types and interfaces when they're needed in other files
-* Do not introduce any data persistence or storage mechanisms
+By contributing, you agree that your contributions will be licensed under its MIT License.
 
-### React Styleguide
+## References
 
-* Use functional components with hooks instead of class components
-* Keep components small and focused (< 300 lines)
-* Use React.memo for purely functional components
-* Use named exports instead of default exports
-* Ensure all calculations and operations remain client-side
-* Do not introduce any server communication or data storage
-* Organize component files in this order:
-  1. Imports
-  2. Types/Interfaces
-  3. Component
-  4. Styles (if using CSS-in-JS)
-  5. Exports
-
-### CSS / Styling
-
-* Follow the [BEM naming convention](http://getbem.com/) if using CSS modules
-* Use CSS variables for common values (colors, spacing, etc.)
-* Avoid inline styles
-
-## Thank You!
-
-Your contributions to open source, large or small, make projects like this possible. Thank you for taking the time to contribute. 
+This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js/blob/a9316a723f9e918afde44dea68b5f9f39b7d9b00/CONTRIBUTING.md). 

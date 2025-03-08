@@ -60,7 +60,7 @@ const AboutPage = () => (
   <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
     <h2>About IUI Success Calculator</h2>
     <p>
-      IUI Success Calculator is a privacy-focused tool that helps estimate pregnancy chances for 
+      IUI Success Calculator is an open-source, privacy-focused tool that helps estimate pregnancy chances for 
       intrauterine insemination (IUI) procedures based on your specific circumstances.
     </p>
     <p>
@@ -72,6 +72,20 @@ const AboutPage = () => (
       <strong>Privacy First:</strong> This calculator runs entirely in your browser. 
       We don't store any data, require no login, and have no tracking - ensuring complete privacy 
       for your sensitive medical information.
+    </p>
+    <p>
+      <strong>Open Source:</strong> We believe in the power of community collaboration to improve 
+      fertility treatment outcomes. This project is open-source, and we welcome contributions from:
+    </p>
+    <ul>
+      <li>Medical professionals who can help refine our success rate calculations</li>
+      <li>Developers who can improve the codebase and add new features</li>
+      <li>Individuals with IUI experience who can provide valuable insights</li>
+      <li>Anyone interested in making fertility treatment information more accessible</li>
+    </ul>
+    <p>
+      Visit our <a href="https://github.com/yourusername/iui-tracker" target="_blank" rel="noopener noreferrer">
+      GitHub repository</a> to learn how you can contribute to this project.
     </p>
     <p>
       <strong>Medical Disclaimer:</strong> This application provides estimates based on statistical data and 

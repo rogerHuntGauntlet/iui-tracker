@@ -53,7 +53,13 @@ const mockAttempts: IUIAttempt[] = [
     previousIUIAttempts: 0,
     bmi: 23.5,
     notes: 'First attempt',
-    outcome: 'negative'
+    outcome: 'negative',
+    preOvulationMedication: true,
+    ovulationTriggerShot: true,
+    hormoneMedication: false,
+    endometriosis: false,
+    pcos: false,
+    blockedTubes: false
   },
   {
     id: '2',
@@ -70,7 +76,13 @@ const mockAttempts: IUIAttempt[] = [
     previousIUIAttempts: 1,
     bmi: 23.2,
     notes: 'Second attempt, increased medication dosage',
-    outcome: 'unknown'
+    outcome: 'unknown',
+    preOvulationMedication: true,
+    ovulationTriggerShot: true,
+    hormoneMedication: true,
+    endometriosis: false,
+    pcos: false,
+    blockedTubes: false
   }
 ];
 
