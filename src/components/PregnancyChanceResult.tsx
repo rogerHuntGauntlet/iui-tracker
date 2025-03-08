@@ -15,7 +15,8 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  CircularProgress
+  CircularProgress,
+  Link
 } from '@mui/material';
 import { PregnancyChanceResult as PregnancyChanceResultType } from '../types';
 
@@ -195,7 +196,7 @@ const PregnancyChanceResult: React.FC<Props> = ({ result }) => {
              '🔍 Get Advanced AI Analysis'}
           </Button>
           <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>
-            Using GauntletAI's API key. <Button 
+            Using <Link href="https://www.gauntletai.com/" target="_blank" rel="noopener noreferrer">GauntletAI's</Link> API key. <Button 
               variant="text" 
               size="small" 
               onClick={() => setOpenDialog(true)}
@@ -314,7 +315,7 @@ const PregnancyChanceResult: React.FC<Props> = ({ result }) => {
         <DialogTitle>OpenAI API Key Configuration</DialogTitle>
         <DialogContent>
           <Typography variant="body1" paragraph>
-            You're currently using GauntletAI's OpenAI API key. You can:
+            You're currently using <Link href="https://www.gauntletai.com/" target="_blank" rel="noopener noreferrer">GauntletAI's</Link> OpenAI API key. You can:
           </Typography>
           <List>
             <ListItem>
