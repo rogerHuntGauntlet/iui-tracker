@@ -180,12 +180,69 @@ export const calculatePregnancyChances = (attempt: IUIAttempt): PregnancyChanceR
     recommendations.push('Discuss weight management strategies with your healthcare provider');
   }
 
-  // Calculate overall chance based on base chance and factors
+  // Treatment Protocol Factors
+  let medicationImpact = 0;
+  let medicationDescription = [];
+
+  if (attempt.preOvulationMedication) {
+    medicationImpact += 0.5;
+    medicationDescription.push('Pre-ovulation medication');
+  }
+  if (attempt.ovulationTriggerShot) {
+    medicationImpact += 0.5;
+    medicationDescription.push('Trigger shot');
+  }
+  if (attempt.hormoneMedication) {
+    medicationImpact += 0.5;
+    medicationDescription.push('Hormone medication');
+  }
+
+  factorBreakdown.medicationProtocol = {
+    impact: medicationImpact,
+    description: medicationDescription.length > 0 
+      ? `Using ${medicationDescription.join(', ')} may improve success rates`
+      : 'No medication assistance'
+  };
+
+  if (medicationDescription.length === 0) {
+    recommendations.push('Discuss potential benefits of medication protocols with your doctor');
+  }
+
+  // Medical Conditions
+  let conditionsImpact = 0;
+  const conditions = [];
+
+  if (attempt.endometriosis) {
+    conditionsImpact -= 1;
+    conditions.push('endometriosis');
+    recommendations.push('Consider specialized treatment protocols for endometriosis');
+  }
+
+  if (attempt.pcos) {
+    conditionsImpact -= 0.5;
+    conditions.push('PCOS');
+    recommendations.push('Ensure optimal ovulation timing with PCOS');
+  }
+
+  if (attempt.blockedTubes) {
+    conditionsImpact -= 1.5;
+    conditions.push('blocked tubes');
+    recommendations.push('Discuss the impact of blocked tubes on IUI success with your doctor');
+  }
+
+  if (conditions.length > 0) {
+    factorBreakdown.medicalConditions = {
+      impact: conditionsImpact,
+      description: `Presence of ${conditions.join(', ')} may affect success rates`
+    };
+  }
+
+  // Calculate overall chance based on base chance and all factors
   let modifierSum = Object.values(factorBreakdown).reduce((sum, factor) => sum + factor.impact, 0);
   let overallChance = baseChance + (modifierSum * 2.5); // Each impact point is worth about 2.5% chance
 
   // Ensure the chance stays within reasonable bounds
-  overallChance = Math.max(Math.min(overallChance, 40), 3); // Cap between 3% and 40%
+  overallChance = Math.max(Math.min(overallChance, 40), 3);
 
   // Add general recommendations if needed
   if (recommendations.length === 0) {

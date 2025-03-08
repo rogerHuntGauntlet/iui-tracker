@@ -23,6 +23,13 @@ export interface IUIAttempt {
   notes: string;
   outcome?: 'positive' | 'negative' | 'unknown';
   outcomeDate?: string;
+  // New fields for additional success factors
+  preOvulationMedication: boolean;
+  ovulationTriggerShot: boolean;
+  hormoneMedication: boolean;
+  endometriosis: boolean;
+  pcos: boolean;
+  blockedTubes: boolean;
 }
 
 /**

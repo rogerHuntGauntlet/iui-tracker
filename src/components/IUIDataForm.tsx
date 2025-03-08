@@ -14,7 +14,9 @@ import {
   MenuItem, 
   Chip,
   IconButton,
-  Divider
+  Divider,
+  FormControlLabel,
+  Switch
 } from '@mui/material';
 import { Add as AddIcon, Remove as RemoveIcon } from '@mui/icons-material';
 import { IUIAttempt } from '../types';
@@ -91,16 +93,20 @@ const IUIDataForm: React.FC<IUIDataFormProps> = ({ onSubmit, initialData = {} })
       bmi: initialData.bmi || 22,
       amhLevel: initialData.amhLevel || '',
       notes: initialData.notes || '',
+      preOvulationMedication: initialData.preOvulationMedication || false,
+      ovulationTriggerShot: initialData.ovulationTriggerShot || false,
+      hormoneMedication: initialData.hormoneMedication || false,
+      endometriosis: initialData.endometriosis || false,
+      pcos: initialData.pcos || false,
+      blockedTubes: initialData.blockedTubes || false,
     },
     validationSchema,
     onSubmit: (values) => {
       // Create a new IUI attempt object
       const newAttempt: IUIAttempt = {
-        id: initialData.id || uuidv4(), // Generate ID if not editing
+        id: initialData.id || uuidv4(),
         ...values,
-        // Convert string to number if needed
         amhLevel: values.amhLevel ? Number(values.amhLevel) : undefined,
-        // Ensure follicle sizes are trimmed to actual follicle count
         follicleSize: values.follicleSize.slice(0, values.follicleCount),
       };
       
@@ -336,6 +342,98 @@ const IUIDataForm: React.FC<IUIDataFormProps> = ({ onSubmit, initialData = {} })
                 ))}
               </Select>
             </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Divider sx={{ my: 2 }}>
+              <Chip label="Treatment Protocol" />
+            </Divider>
+          </Grid>
+
+          {/* Treatment Protocol */}
+          <Grid item xs={12} sm={6} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.preOvulationMedication}
+                  onChange={formik.handleChange}
+                  name="preOvulationMedication"
+                />
+              }
+              label="Pre-Ovulation Medication"
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.ovulationTriggerShot}
+                  onChange={formik.handleChange}
+                  name="ovulationTriggerShot"
+                />
+              }
+              label="Ovulation Trigger Shot"
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.hormoneMedication}
+                  onChange={formik.handleChange}
+                  name="hormoneMedication"
+                />
+              }
+              label="Hormone Medication"
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Divider sx={{ my: 2 }}>
+              <Chip label="Medical Conditions" />
+            </Divider>
+          </Grid>
+
+          {/* Medical Conditions */}
+          <Grid item xs={12} sm={6} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.endometriosis}
+                  onChange={formik.handleChange}
+                  name="endometriosis"
+                />
+              }
+              label="Endometriosis"
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.pcos}
+                  onChange={formik.handleChange}
+                  name="pcos"
+                />
+              }
+              label="PCOS"
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formik.values.blockedTubes}
+                  onChange={formik.handleChange}
+                  name="blockedTubes"
+                />
+              }
+              label="Blocked Tubes"
+            />
           </Grid>
 
           <Grid item xs={12}>
