@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Box,
@@ -19,12 +19,48 @@ import {
   People as CommunityIcon,
   GitHub as GitHubIcon,
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import TermsModal from '../components/TermsModal';
+import IUICalculator from '../components/IUICalculator';
 
 const LandingPage: React.FC = () => {
   const theme = useTheme();
-  const navigate = useNavigate();
+  const [showTerms, setShowTerms] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
 
+  // Check if terms were previously accepted
+  useEffect(() => {
+    const accepted = localStorage.getItem('termsAccepted');
+    if (accepted === 'true') {
+      setTermsAccepted(true);
+    }
+  }, []);
+
+  const handleStartCalculator = () => {
+    if (!termsAccepted) {
+      setShowTerms(true);
+    } else {
+      setShowCalculator(true);
+    }
+  };
+
+  const handleAcceptTerms = () => {
+    localStorage.setItem('termsAccepted', 'true');
+    setTermsAccepted(true);
+    setShowTerms(false);
+    setShowCalculator(true);
+  };
+
+  // If calculator is shown, only display it
+  if (showCalculator) {
+    return (
+      <Container maxWidth="lg">
+        <IUICalculator />
+      </Container>
+    );
+  }
+
+  // Features section content
   const features = [
     {
       icon: <ChartIcon fontSize="large" color="primary" />,
@@ -50,6 +86,9 @@ const LandingPage: React.FC = () => {
 
   return (
     <Box>
+      {/* Terms Modal */}
+      <TermsModal open={showTerms} onAccept={handleAcceptTerms} />
+
       {/* Hero Section */}
       <Box
         sx={{
@@ -73,7 +112,7 @@ const LandingPage: React.FC = () => {
                   variant="contained"
                   size="large"
                   color="secondary"
-                  onClick={() => navigate('/calculator')}
+                  onClick={handleStartCalculator}
                   sx={{ 
                     py: 1.5,
                     px: 4,
@@ -85,7 +124,7 @@ const LandingPage: React.FC = () => {
                     }
                   }}
                 >
-                  Try Calculator
+                  Start Calculator
                 </Button>
                 <Button
                   variant="outlined"
@@ -197,7 +236,7 @@ const LandingPage: React.FC = () => {
                 <Typography variant="body2" color="text.secondary" paragraph>
                   Get personalized insights and recommendations for your IUI journey.
                 </Typography>
-                <Button variant="contained" color="primary" fullWidth onClick={() => navigate('/calculator')}>
+                <Button variant="contained" color="primary" fullWidth onClick={handleStartCalculator}>
                   Try Calculator
                 </Button>
               </Paper>

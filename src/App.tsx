@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import IUICalculator from './components/IUICalculator';
 import LandingPage from './pages/LandingPage';
-import HistoryPage from './pages/HistoryPage';
+import AboutPage from './pages/AboutPage';
 
 // Create a custom theme
 const theme = createTheme({
@@ -134,8 +134,6 @@ const theme = createTheme({
 });
 
 function App() {
-  const navigate = useNavigate();
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -144,7 +142,6 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<LandingPage />} />
             <Route path="/calculator" element={<IUICalculator />} />
-            <Route path="/history" element={<HistoryPage />} />
             <Route path="/about" element={<AboutPage />} />
           </Route>
         </Routes>
