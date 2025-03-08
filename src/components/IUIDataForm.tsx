@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { 
@@ -19,9 +19,10 @@ import {
   Switch
 } from '@mui/material';
 import { Add as AddIcon, Remove as RemoveIcon } from '@mui/icons-material';
-import { IUIAttempt } from '../types';
+import { IUIAttempt, calculateIUISuccess } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 import { SelectChangeEvent } from '@mui/material/Select';
+import TermsModal from './TermsModal';
 
 // Common medications used in IUI
 const COMMON_MEDICATIONS = [
@@ -41,7 +42,25 @@ interface IUIDataFormProps {
 
 const IUIDataForm: React.FC<IUIDataFormProps> = ({ onSubmit, initialData = {} }) => {
   const [follicleCount, setFollicleCount] = useState(initialData.follicleCount || 1);
+  const [showTerms, setShowTerms] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   
+  useEffect(() => {
+    // Check if terms have been accepted
+    const termsAccepted = localStorage.getItem('iuiTermsAccepted');
+    if (!termsAccepted) {
+      setShowTerms(true);
+    } else {
+      setHasAcceptedTerms(true);
+    }
+  }, []);
+
+  const handleAcceptTerms = () => {
+    localStorage.setItem('iuiTermsAccepted', 'true');
+    setHasAcceptedTerms(true);
+    setShowTerms(false);
+  };
+
   const validationSchema = Yup.object({
     date: Yup.date().required('Date is required'),
     age: Yup.number()
@@ -102,15 +121,24 @@ const IUIDataForm: React.FC<IUIDataFormProps> = ({ onSubmit, initialData = {} })
     },
     validationSchema,
     onSubmit: (values) => {
-      // Create a new IUI attempt object
-      const newAttempt: IUIAttempt = {
+      if (!hasAcceptedTerms) {
+        setShowTerms(true);
+        return;
+      }
+
+      // Create a new IUI attempt object with calculated values
+      const calculatedAttempt: IUIAttempt = {
         id: initialData.id || uuidv4(),
         ...values,
         amhLevel: values.amhLevel ? Number(values.amhLevel) : undefined,
         follicleSize: values.follicleSize.slice(0, values.follicleCount),
       };
       
-      onSubmit(newAttempt);
+      // Calculate success probability
+      calculatedAttempt.successProbability = calculateIUISuccess(calculatedAttempt);
+      
+      // Return the attempt data with calculated probability
+      onSubmit(calculatedAttempt);
     },
   });
 
@@ -148,371 +176,380 @@ const IUIDataForm: React.FC<IUIDataFormProps> = ({ onSubmit, initialData = {} })
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-      <Typography variant="h5" component="h2" gutterBottom>
-        {initialData.id ? 'Edit IUI Attempt' : 'New IUI Attempt'}
-      </Typography>
-      
-      <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{ mt: 3 }}>
-        <Grid container spacing={3}>
-          {/* Basic Information */}
-          <Grid item xs={12} sm={6} md={4}>
-            <TextField
-              fullWidth
-              id="date"
-              name="date"
-              label="IUI Date"
-              type="date"
-              value={formik.values.date}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.date && Boolean(formik.errors.date)}
-              helperText={formik.touched.date && formik.errors.date}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
+    <>
+      <TermsModal open={showTerms} onAccept={handleAcceptTerms} />
+      <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
+        <Typography variant="h5" component="h2" gutterBottom>
+          {initialData.id ? 'Edit IUI Attempt' : 'IUI Data'}
+        </Typography>
+        
+        <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{ mt: 3 }}>
+          <Grid container spacing={3}>
+            {/* Basic Information */}
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                id="date"
+                name="date"
+                label="IUI Date"
+                type="date"
+                value={formik.values.date}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.date && Boolean(formik.errors.date)}
+                helperText={formik.touched.date && formik.errors.date}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <TextField
-              fullWidth
-              id="age"
-              name="age"
-              label="Age"
-              type="number"
-              value={formik.values.age}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.age && Boolean(formik.errors.age)}
-              helperText={formik.touched.age && formik.errors.age}
-            />
-          </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                id="age"
+                name="age"
+                label="Age"
+                type="number"
+                value={formik.values.age}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.age && Boolean(formik.errors.age)}
+                helperText={formik.touched.age && formik.errors.age}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <TextField
-              fullWidth
-              id="bmi"
-              name="bmi"
-              label="BMI"
-              type="number"
-              value={formik.values.bmi}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.bmi && Boolean(formik.errors.bmi)}
-              helperText={formik.touched.bmi && formik.errors.bmi}
-            />
-          </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                id="bmi"
+                name="bmi"
+                label="BMI"
+                type="number"
+                value={formik.values.bmi}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.bmi && Boolean(formik.errors.bmi)}
+                helperText={formik.touched.bmi && formik.errors.bmi}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }}>
-              <Chip label="Sperm Parameters" />
-            </Divider>
-          </Grid>
+            <Grid item xs={12}>
+              <Divider sx={{ my: 2 }}>
+                <Chip label="Sperm Parameters" />
+              </Divider>
+            </Grid>
 
-          {/* Sperm Parameters */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              id="partnerSpermCount"
-              name="partnerSpermCount"
-              label="Sperm Count (million/ml)"
-              type="number"
-              value={formik.values.partnerSpermCount}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.partnerSpermCount && Boolean(formik.errors.partnerSpermCount)}
-              helperText={formik.touched.partnerSpermCount && formik.errors.partnerSpermCount}
-            />
-          </Grid>
+            {/* Sperm Parameters */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="partnerSpermCount"
+                name="partnerSpermCount"
+                label="Sperm Count (million/ml)"
+                type="number"
+                value={formik.values.partnerSpermCount}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.partnerSpermCount && Boolean(formik.errors.partnerSpermCount)}
+                helperText={formik.touched.partnerSpermCount && formik.errors.partnerSpermCount}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              id="partnerSpermMotility"
-              name="partnerSpermMotility"
-              label="Sperm Motility (%)"
-              type="number"
-              value={formik.values.partnerSpermMotility}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.partnerSpermMotility && Boolean(formik.errors.partnerSpermMotility)}
-              helperText={formik.touched.partnerSpermMotility && formik.errors.partnerSpermMotility}
-            />
-          </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="partnerSpermMotility"
+                name="partnerSpermMotility"
+                label="Sperm Motility (%)"
+                type="number"
+                value={formik.values.partnerSpermMotility}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.partnerSpermMotility && Boolean(formik.errors.partnerSpermMotility)}
+                helperText={formik.touched.partnerSpermMotility && formik.errors.partnerSpermMotility}
+              />
+            </Grid>
 
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }}>
-              <Chip label="Follicle Information" />
-            </Divider>
-          </Grid>
+            <Grid item xs={12}>
+              <Divider sx={{ my: 2 }}>
+                <Chip label="Follicle Information" />
+              </Divider>
+            </Grid>
 
-          {/* Follicle Information */}
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              id="follicleCount"
-              name="follicleCount"
-              label="Number of Follicles"
-              type="number"
-              value={follicleCount}
-              onChange={handleFollicleCountChange}
-              error={formik.touched.follicleCount && Boolean(formik.errors.follicleCount)}
-              helperText={formik.touched.follicleCount && formik.errors.follicleCount}
-            />
-          </Grid>
+            {/* Follicle Information */}
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                id="follicleCount"
+                name="follicleCount"
+                label="Number of Follicles"
+                type="number"
+                value={follicleCount}
+                onChange={handleFollicleCountChange}
+                error={formik.touched.follicleCount && Boolean(formik.errors.follicleCount)}
+                helperText={formik.touched.follicleCount && formik.errors.follicleCount}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={8}>
-            <Typography variant="subtitle2" gutterBottom>
-              Follicle Sizes (mm)
-            </Typography>
-            <Grid container spacing={2}>
-              {Array.from({ length: follicleCount }).map((_, index) => (
-                <Grid item xs={6} sm={4} md={3} key={index}>
-                  <TextField
-                    fullWidth
-                    label={`Follicle ${index + 1} (mm)`}
-                    type="number"
-                    value={formik.values.follicleSize[index] || 0}
-                    onChange={(e) => handleFollicleSizeChange(index, Number(e.target.value))}
-                    InputProps={{ inputProps: { min: 0, max: 50 } }}
+            <Grid item xs={12} sm={8}>
+              <Typography variant="subtitle2" gutterBottom>
+                Follicle Sizes (mm)
+              </Typography>
+              <Grid container spacing={2}>
+                {Array.from({ length: follicleCount }).map((_, index) => (
+                  <Grid item xs={6} sm={4} md={3} key={index}>
+                    <TextField
+                      fullWidth
+                      label={`Follicle ${index + 1} (mm)`}
+                      type="number"
+                      value={formik.values.follicleSize[index] || 0}
+                      onChange={(e) => handleFollicleSizeChange(index, Number(e.target.value))}
+                      InputProps={{ inputProps: { min: 0, max: 50 } }}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="endometriumThickness"
+                name="endometriumThickness"
+                label="Endometrium Thickness (mm)"
+                type="number"
+                value={formik.values.endometriumThickness}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.endometriumThickness && Boolean(formik.errors.endometriumThickness)}
+                helperText={formik.touched.endometriumThickness && formik.errors.endometriumThickness}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                id="amhLevel"
+                name="amhLevel"
+                label="AMH Level (ng/mL, if known)"
+                type="number"
+                value={formik.values.amhLevel}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.amhLevel && Boolean(formik.errors.amhLevel)}
+                helperText={formik.touched.amhLevel && formik.errors.amhLevel}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Divider sx={{ my: 2 }}>
+                <Chip label="Medications" />
+              </Divider>
+            </Grid>
+
+            {/* Medications */}
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel id="medications-label">Medications Used</InputLabel>
+                <Select
+                  labelId="medications-label"
+                  id="medicationsUsed"
+                  name="medicationsUsed"
+                  multiple
+                  value={formik.values.medicationsUsed}
+                  onChange={handleMedicationChange}
+                  renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {(selected as string[]).map((value) => (
+                        <Chip key={value} label={value} />
+                      ))}
+                    </Box>
+                  )}
+                >
+                  {COMMON_MEDICATIONS.map((medication) => (
+                    <MenuItem key={medication} value={medication}>
+                      {medication}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Divider sx={{ my: 2 }}>
+                <Chip label="Treatment Protocol" />
+              </Divider>
+            </Grid>
+
+            {/* Treatment Protocol */}
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formik.values.preOvulationMedication}
+                    onChange={formik.handleChange}
+                    name="preOvulationMedication"
                   />
-                </Grid>
-              ))}
+                }
+                label="Pre-Ovulation Medication"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formik.values.ovulationTriggerShot}
+                    onChange={formik.handleChange}
+                    name="ovulationTriggerShot"
+                  />
+                }
+                label="Ovulation Trigger Shot"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formik.values.hormoneMedication}
+                    onChange={formik.handleChange}
+                    name="hormoneMedication"
+                  />
+                }
+                label="Hormone Medication"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Divider sx={{ my: 2 }}>
+                <Chip label="Medical Conditions" />
+              </Divider>
+            </Grid>
+
+            {/* Medical Conditions */}
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formik.values.endometriosis}
+                    onChange={formik.handleChange}
+                    name="endometriosis"
+                  />
+                }
+                label="Endometriosis"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formik.values.pcos}
+                    onChange={formik.handleChange}
+                    name="pcos"
+                  />
+                }
+                label="PCOS"
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={formik.values.blockedTubes}
+                    onChange={formik.handleChange}
+                    name="blockedTubes"
+                  />
+                }
+                label="Blocked Tubes"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Divider sx={{ my: 2 }}>
+                <Chip label="Medical History" />
+              </Divider>
+            </Grid>
+
+            {/* Medical History */}
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                id="previousPregnancies"
+                name="previousPregnancies"
+                label="Previous Pregnancies"
+                type="number"
+                value={formik.values.previousPregnancies}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.previousPregnancies && Boolean(formik.errors.previousPregnancies)}
+                helperText={formik.touched.previousPregnancies && formik.errors.previousPregnancies}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                id="previousMiscarriages"
+                name="previousMiscarriages"
+                label="Previous Miscarriages"
+                type="number"
+                value={formik.values.previousMiscarriages}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.previousMiscarriages && Boolean(formik.errors.previousMiscarriages)}
+                helperText={formik.touched.previousMiscarriages && formik.errors.previousMiscarriages}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <TextField
+                fullWidth
+                id="previousIUIAttempts"
+                name="previousIUIAttempts"
+                label="Previous IUI Attempts"
+                type="number"
+                value={formik.values.previousIUIAttempts}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.previousIUIAttempts && Boolean(formik.errors.previousIUIAttempts)}
+                helperText={formik.touched.previousIUIAttempts && formik.errors.previousIUIAttempts}
+              />
+            </Grid>
+
+            {/* Notes */}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="notes"
+                name="notes"
+                label="Notes"
+                multiline
+                rows={4}
+                value={formik.values.notes}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.notes && Boolean(formik.errors.notes)}
+                helperText={formik.touched.notes && formik.errors.notes}
+              />
             </Grid>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              id="endometriumThickness"
-              name="endometriumThickness"
-              label="Endometrium Thickness (mm)"
-              type="number"
-              value={formik.values.endometriumThickness}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.endometriumThickness && Boolean(formik.errors.endometriumThickness)}
-              helperText={formik.touched.endometriumThickness && formik.errors.endometriumThickness}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              id="amhLevel"
-              name="amhLevel"
-              label="AMH Level (ng/mL, if known)"
-              type="number"
-              value={formik.values.amhLevel}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.amhLevel && Boolean(formik.errors.amhLevel)}
-              helperText={formik.touched.amhLevel && formik.errors.amhLevel}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }}>
-              <Chip label="Medications" />
-            </Divider>
-          </Grid>
-
-          {/* Medications */}
-          <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="medications-label">Medications Used</InputLabel>
-              <Select
-                labelId="medications-label"
-                id="medicationsUsed"
-                name="medicationsUsed"
-                multiple
-                value={formik.values.medicationsUsed}
-                onChange={handleMedicationChange}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {(selected as string[]).map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}
-              >
-                {COMMON_MEDICATIONS.map((medication) => (
-                  <MenuItem key={medication} value={medication}>
-                    {medication}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }}>
-              <Chip label="Treatment Protocol" />
-            </Divider>
-          </Grid>
-
-          {/* Treatment Protocol */}
-          <Grid item xs={12} sm={6} md={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.preOvulationMedication}
-                  onChange={formik.handleChange}
-                  name="preOvulationMedication"
-                />
-              }
-              label="Pre-Ovulation Medication"
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.ovulationTriggerShot}
-                  onChange={formik.handleChange}
-                  name="ovulationTriggerShot"
-                />
-              }
-              label="Ovulation Trigger Shot"
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.hormoneMedication}
-                  onChange={formik.handleChange}
-                  name="hormoneMedication"
-                />
-              }
-              label="Hormone Medication"
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }}>
-              <Chip label="Medical Conditions" />
-            </Divider>
-          </Grid>
-
-          {/* Medical Conditions */}
-          <Grid item xs={12} sm={6} md={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.endometriosis}
-                  onChange={formik.handleChange}
-                  name="endometriosis"
-                />
-              }
-              label="Endometriosis"
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.pcos}
-                  onChange={formik.handleChange}
-                  name="pcos"
-                />
-              }
-              label="PCOS"
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={4}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formik.values.blockedTubes}
-                  onChange={formik.handleChange}
-                  name="blockedTubes"
-                />
-              }
-              label="Blocked Tubes"
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Divider sx={{ my: 2 }}>
-              <Chip label="Medical History" />
-            </Divider>
-          </Grid>
-
-          {/* Medical History */}
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              id="previousPregnancies"
-              name="previousPregnancies"
-              label="Previous Pregnancies"
-              type="number"
-              value={formik.values.previousPregnancies}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.previousPregnancies && Boolean(formik.errors.previousPregnancies)}
-              helperText={formik.touched.previousPregnancies && formik.errors.previousPregnancies}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              id="previousMiscarriages"
-              name="previousMiscarriages"
-              label="Previous Miscarriages"
-              type="number"
-              value={formik.values.previousMiscarriages}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.previousMiscarriages && Boolean(formik.errors.previousMiscarriages)}
-              helperText={formik.touched.previousMiscarriages && formik.errors.previousMiscarriages}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              id="previousIUIAttempts"
-              name="previousIUIAttempts"
-              label="Previous IUI Attempts"
-              type="number"
-              value={formik.values.previousIUIAttempts}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.previousIUIAttempts && Boolean(formik.errors.previousIUIAttempts)}
-              helperText={formik.touched.previousIUIAttempts && formik.errors.previousIUIAttempts}
-            />
-          </Grid>
-
-          {/* Notes */}
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="notes"
-              name="notes"
-              label="Notes"
-              multiline
-              rows={4}
-              value={formik.values.notes}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.notes && Boolean(formik.errors.notes)}
-              helperText={formik.touched.notes && formik.errors.notes}
-            />
-          </Grid>
-        </Grid>
-
-        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-          <Button type="submit" variant="contained" color="primary" size="large">
-            {initialData.id ? 'Update IUI Data' : 'Save IUI Data'}
-          </Button>
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button 
+              type="submit" 
+              variant="contained" 
+              color="primary" 
+              size="large"
+              onClick={() => formik.handleSubmit()}
+            >
+              Calculate Success Probability
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Paper>
+      </Paper>
+    </>
   );
 };
 
