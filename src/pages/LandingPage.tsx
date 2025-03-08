@@ -129,7 +129,7 @@ const LandingPage: React.FC = () => {
                 <Button
                   variant="outlined"
                   size="large"
-                  href="https://github.com/yourusername/iui-tracker"
+                  href="https://github.com/rogerHuntGauntlet/iui-tracker"
                   target="_blank"
                   startIcon={<GitHubIcon />}
                   sx={{ 
@@ -260,7 +260,7 @@ const LandingPage: React.FC = () => {
               variant="outlined"
               color="primary"
               startIcon={<GitHubIcon />}
-              href="https://github.com/yourusername/iui-tracker"
+              href="https://github.com/rogerHuntGauntlet/iui-tracker"
               target="_blank"
             >
               Contribute on GitHub

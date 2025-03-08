@@ -58,7 +58,7 @@ In short, when you submit code changes, your submissions are understood to be un
 
 ## Report bugs using GitHub's [issue tracker]
 
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/yourusername/iui-tracker/issues/new).
+We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/rogerHuntGauntlet/iui-tracker/issues/new).
 
 ## Write bug reports with detail, background, and sample code
 

@@ -128,7 +128,7 @@ const Layout: React.FC = () => {
                 <Button
                   variant="outlined"
                   color="primary"
-                  href="https://github.com/yourusername/iui-tracker"
+                  href="https://github.com/rogerHuntGauntlet/iui-tracker"
                   target="_blank"
                   startIcon={<GitHubIcon />}
                 >
@@ -183,7 +183,7 @@ const Layout: React.FC = () => {
             {' Open Source IUI Calculator • '}
             <Button
               component="a"
-              href="https://github.com/yourusername/iui-tracker"
+              href="https://github.com/rogerHuntGauntlet/iui-tracker"
               target="_blank"
               color="primary"
               size="small"

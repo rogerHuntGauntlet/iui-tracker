@@ -109,7 +109,7 @@ const AboutPage: React.FC = () => {
           variant="outlined"
           color="primary"
           size="large"
-          href="https://github.com/yourusername/iui-tracker"
+          href="https://github.com/rogerHuntGauntlet/iui-tracker"
           target="_blank"
           startIcon={<GitHubIcon />}
         >
