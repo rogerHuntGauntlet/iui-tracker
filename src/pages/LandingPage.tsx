@@ -205,45 +205,7 @@ const LandingPage: React.FC = () => {
         </Grid>
       </Container>
 
-      {/* Trust Section */}
-      <Box sx={{ bgcolor: 'grey.50', py: 8 }}>
-        <Container maxWidth="lg">
-          <Typography variant="h4" align="center" gutterBottom>
-            Trusted by the Fertility Community
-          </Typography>
-          <Typography variant="subtitle1" align="center" color="text.secondary" paragraph sx={{ mb: 6 }}>
-            Join thousands of individuals and medical professionals using our calculator
-          </Typography>
-          <Grid container spacing={4} justifyContent="center">
-            <Grid item xs={12} md={4}>
-              <Paper sx={{ p: 3, height: '100%' }}>
-                <Typography variant="h6" gutterBottom>
-                  🏥 For Medical Professionals
-                </Typography>
-                <Typography variant="body2" color="text.secondary" paragraph>
-                  Evidence-based tool to support your clinical decisions and patient counseling.
-                </Typography>
-                <Button variant="outlined" color="primary" fullWidth>
-                  Learn More
-                </Button>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Paper sx={{ p: 3, height: '100%' }}>
-                <Typography variant="h6" gutterBottom>
-                  👥 For Patients
-                </Typography>
-                <Typography variant="body2" color="text.secondary" paragraph>
-                  Get personalized insights and recommendations for your IUI journey.
-                </Typography>
-                <Button variant="contained" color="primary" fullWidth onClick={handleStartCalculator}>
-                  Try Calculator
-                </Button>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+     
 
       {/* Open Source Section */}
       <Container maxWidth="lg" sx={{ py: 8 }}>
