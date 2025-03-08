@@ -38,7 +38,6 @@ const Layout: React.FC = () => {
 
   const navigationItems = [
     { text: 'Calculator', path: '/calculator', icon: <CalculateIcon /> },
-    { text: 'History', path: '/history', icon: <HistoryIcon /> },
     { text: 'About', path: '/about', icon: <InfoIcon /> },
   ];
 
